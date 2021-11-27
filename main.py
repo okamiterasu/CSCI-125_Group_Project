@@ -1,3 +1,4 @@
+from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, font, filedialog
 from functools import partial
@@ -7,6 +8,7 @@ mainWindow = ""
 textPane = ""
 menu_bar = None
 filePath = ""
+exec_dir = Path(__file__).parent
 
 # TODO: Look over this document for TODO tags. Make sure you have contributed your part on time
 # TODO: Brianna and Deon, please claim some of the unclaimed work that needs to be done. Listed below
@@ -166,8 +168,8 @@ def initialize_components():
     help = ttk.Menubutton(menu_bar, text="Help")
     help.grid(row=0, column=3)
     help_menu = tk.Menu(help, tearoff=0)
-    help_menu.add_command(label="Help", command=stub)  #TODO: Brian
-    help_menu.add_command(label="About", command=stub) #TODO: Brian
+    help_menu.add_command(label="Help", command=show_help)
+    help_menu.add_command(label="About", command=show_about)
     help["menu"] = help_menu # Associate menu with button
 
 
@@ -242,6 +244,35 @@ def launch():
     initialize_application_frame()
     initialize_components()
     mainWindow.mainloop()
+
+def show_about():
+    path = exec_dir / "about.txt"
+    with path.open() as file:
+        header = next(file)
+        body = "".join(file)
+    
+    about_window = tk.Toplevel(master=mainWindow)
+    about_window.title("About")
+    ttk.Label(master=about_window, text=header).grid(row=0, column=0)
+    about_text = tk.Text(master=about_window)
+    about_text.insert("1.0", body)
+    about_text["state"] = "disabled"
+    about_text.grid(row=1, column=0)
+
+
+def show_help():
+    path = exec_dir / "help.txt"
+    with path.open() as file:
+        header = next(file)
+        body = "".join(file)
+    
+    help_window = tk.Toplevel(master=mainWindow)
+    help_window.title("About")
+    ttk.Label(master=help_window, text=header).grid(row=0, column=0)
+    help_text = tk.Text(master=help_window)
+    help_text.insert("1.0", body)
+    help_text["state"] = "disabled"
+    help_text.grid(row=1, column=0)
 
 
 
