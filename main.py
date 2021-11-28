@@ -102,7 +102,6 @@ def get_font(type,size,style):
 
     textPane.configure(font=choice)
 
-
 def upper_selection():
     """
     Takes the selected range from the text pane and converts that text to uppercase in place.
@@ -157,11 +156,11 @@ def initialize_components():
     file = ttk.Menubutton(menu_bar, text="File")
     file.grid(row=0, column=0)
     file_menu = tk.Menu(file, tearoff=0)
-    file_menu.add_command(label="Open...", command=open_file)#TODO: Deon
+    file_menu.add_command(label="Open...", command=open_file)
     file_menu.add_command(label="New Window...", command=launch)
     file_menu.add_separator()
-    file_menu.add_command(label="Save", command=save_file) #TODO: Deon
-    file_menu.add_command(label="Save As...", command=partial(save_file,True)) #TODO: Deon
+    file_menu.add_command(label="Save", command=save_file)
+    file_menu.add_command(label="Save As...", command=partial(save_file,True))
     file_menu.add_separator()
     file_menu.add_command(label="Exit", command=mainWindow.destroy)
     file["menu"] = file_menu # Associate menu with button
@@ -169,9 +168,6 @@ def initialize_components():
     edit = ttk.Menubutton(menu_bar, text="Edit")
     edit.grid(row=0, column=1)
     edit_menu = tk.Menu(edit, tearoff=0)
-    edit_menu.add_command(label="Cut", command=stub) #TODO: Justin
-    edit_menu.add_command(label="Copy", command=stub) #TODO: Justin
-    edit_menu.add_separator()
     edit_menu.add_command(label="Find...", command=stub) #TODO: Brianna
     edit_menu.add_command(label="Find and Replace...", command=stub) #TODO: Brianna
     edit_menu.add_separator()
@@ -213,12 +209,7 @@ def initialize_components():
     scrollBary.config(command=textPane.xview)
     textPane.config(yscrollcommand=scrollBary.set,
                     xscrollcommand=scrollBarx.set)
-    #TODO:
-    # We need the menu made. Collaborate with team to decide what all menu items
-    # We need Scrollbar X / Y and mapping DONE!! - Jcockrell
-    # We need the wrap option to be a variable item some how so we can make a menu option toggle that.
-    # We need a menu item for each of the discussed string manipulation. Set them up with placeholder function calls.
-    # I will replace them with the correct function calls.
+
 
 def insert_data(data):
     """
@@ -300,7 +291,6 @@ def show_help():
     help_text.insert("1.0", body)
     help_text["state"] = "disabled"
     help_text.grid(row=1, column=0)
-
 
 
 launch()
