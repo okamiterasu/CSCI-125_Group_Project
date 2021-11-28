@@ -266,9 +266,13 @@ def launch():
 
 def show_about():
     path = exec_dir / "about.txt"
-    with path.open() as file:
-        header = next(file)
-        body = "".join(file)
+    try:
+        with path.open() as file:
+            header = next(file)
+            body = "".join(file)
+    except FileNotFoundError:
+        tk.messagebox.showerror("File Not Found", f'File "{path}" not found.\nThis file is important.')
+        return
     
     about_window = tk.Toplevel(master=mainWindow)
     about_window.title("About")
@@ -281,9 +285,13 @@ def show_about():
 
 def show_help():
     path = exec_dir / "help.txt"
-    with path.open() as file:
-        header = next(file)
-        body = "".join(file)
+    try:
+        with path.open() as file:
+            header = next(file)
+            body = "".join(file)
+    except FileNotFoundError:
+        tk.messagebox.showerror("File Not Found", f'File "{path}" not found.\nThis file is important.')
+        return
     
     help_window = tk.Toplevel(master=mainWindow)
     help_window.title("About")
