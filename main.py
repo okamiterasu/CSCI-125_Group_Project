@@ -1,7 +1,7 @@
 from pathlib import Path
-import tkinter as tk
 from tkinter import ttk, font, filedialog
 from functools import partial
+import tkinter as tk, datetime as dt
 
 #global variables
 mainWindow = ""
@@ -33,6 +33,8 @@ def initialize_application_frame():
     mainWindow = tk.Tk()
     mainWindow.title("Notepad Group Project")
     mainWindow.geometry("800x500")
+
+
 
 def toggle_wrap():
     """
@@ -125,9 +127,6 @@ def lower_selection():
     textPane.delete(start,end)#delete the selection (the not converted)
 
 def insert_date_time():
-    """
-    Inserts the date and time at the cursor location
-    """
     global textPane
     dateTime = dt.datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
     textPane.insert(textPane.index(tk.INSERT), dateTime)
@@ -178,8 +177,8 @@ def initialize_components():
     edit_menu.add_command(label="Find...", command=stub) #TODO: Brianna
     edit_menu.add_command(label="Find and Replace...", command=stub) #TODO: Brianna
     edit_menu.add_separator()
-    edit_menu.add_command(label="Uppercase Selection", command=upper_selection) 
-    edit_menu.add_command(label="Lowercase Selection", command=lower_selection) 
+    edit_menu.add_command(label="Uppercase Selection", command=upper_selection) #TODO: Brianna
+    edit_menu.add_command(label="Lowercase Selection", command=lower_selection) #TODO: Brianna
     edit_menu.add_separator()
     edit_menu.add_command(label="Sort Lines Alphabetically", command=stub) #TODO: Brianna
     edit_menu.add_command(label="Insert Date / Time Here", command=insert_date_time)
@@ -200,6 +199,7 @@ def initialize_components():
     help_menu.add_command(label="About", command=show_about)
     help["menu"] = help_menu # Associate menu with button
 
+
     #define and place scrollbars - Justin Cockrell
     scrollBarx = tk.Scrollbar(mainWindow, orient="horizontal")
     scrollBary = tk.Scrollbar(mainWindow)
@@ -209,13 +209,15 @@ def initialize_components():
     #define and place the main textbox - Justin Cockrell
     global textPane #textPane is global. This is the reference to it.
     textPane = tk.Text(mainWindow, wrap="none")
-    textPane.pack(expand=True, fill="both")
-
-    #config Section for the scroll bars. This adds functionality to scroll - Justin Cockrell
-    scrollBarx.config(command=textPane.yview)
-    scrollBary.config(command=textPane.xview)
+    # config Section for the scroll bars. This adds functionality to scroll - Justin Cockrell
+    scrollBarx.config(command=textPane.xview)
+    scrollBary.config(command=textPane.yview)
     textPane.config(yscrollcommand=scrollBary.set,
                     xscrollcommand=scrollBarx.set)
+    textPane.pack(expand=True, fill="both")
+
+
+
 
 def insert_data(data):
     """
@@ -225,6 +227,7 @@ def insert_data(data):
     #This won't change much. This just adds data to the textbox. Open file will change
     textPane.delete("1.0",tk.END)
     textPane.insert("1.0", data)
+
 
 #FILE IO SECTION
 #Expectation: When clicked, open file will open a filedialog and then pass the path of the file to insert_data
@@ -248,6 +251,7 @@ def save_file(saveAs = False): #Optional saveAs variable to turn this into a sav
         data = file.write(textPane.get("1.0", tk.END))
     print(textPane.get("1.0", tk.END))
 
+
 #Drawing a blank here. Surely we will have to add stuff to main later but I think it may get called in other functions
 def launch():
     """
@@ -259,16 +263,22 @@ def launch():
     initialize_components()
     mainWindow.mainloop()
 
-def show_about():
-    path = exec_dir / "about.txt"
+
+def show_about():  # program that opens about txt
+    header = ""
+    body = ""
     try:
+        # opens about text
+        path = exec_dir / "about.txt"
         with path.open() as file:
             header = next(file)
             body = "".join(file)
     except FileNotFoundError:
-        tk.messagebox.showerror("File Not Found", f'File "{path}" not found.\nThis file is important.')
-        return
-    
+        print("File not found!")
+    except OSError:
+        print("File corrupted!")
+
+
     about_window = tk.Toplevel(master=mainWindow)
     about_window.title("About")
     ttk.Label(master=about_window, text=header).grid(row=0, column=0)
@@ -277,16 +287,21 @@ def show_about():
     about_text["state"] = "disabled"
     about_text.grid(row=1, column=0)
 
-def show_help():
-    path = exec_dir / "help.txt"
+
+def show_help():  # program that opens help txt
+    header = ""
+    body = ""
     try:
+        # opens help text
+        path = exec_dir / "help.txt"
         with path.open() as file:
             header = next(file)
             body = "".join(file)
     except FileNotFoundError:
-        tk.messagebox.showerror("File Not Found", f'File "{path}" not found.\nThis file is important.')
-        return
-    
+        print("File not found!")
+    except OSError:
+        print("File corrupted!")
+
     help_window = tk.Toplevel(master=mainWindow)
     help_window.title("About")
     ttk.Label(master=help_window, text=header).grid(row=0, column=0)
