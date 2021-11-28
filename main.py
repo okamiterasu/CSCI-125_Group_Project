@@ -124,6 +124,13 @@ def lower_selection():
     textPane.insert(start, selection.lower())#insert the lowercase stuff
     textPane.delete(start,end)#delete the selection (the not converted)
 
+def insert_date_time():
+    """
+    Inserts the date and time at the cursor location
+    """
+    global textPane
+    dateTime = dt.datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
+    textPane.insert(textPane.index(tk.INSERT), dateTime)
 
 def initialize_components():
     """
@@ -171,10 +178,11 @@ def initialize_components():
     edit_menu.add_command(label="Find...", command=stub) #TODO: Brianna
     edit_menu.add_command(label="Find and Replace...", command=stub) #TODO: Brianna
     edit_menu.add_separator()
-    edit_menu.add_command(label="Uppercase Selection", command=upper_selection) #TODO: Brianna
-    edit_menu.add_command(label="Lowercase Selection", command=lower_selection) #TODO: Brianna
+    edit_menu.add_command(label="Uppercase Selection", command=upper_selection) 
+    edit_menu.add_command(label="Lowercase Selection", command=lower_selection) 
     edit_menu.add_separator()
     edit_menu.add_command(label="Sort Lines Alphabetically", command=stub) #TODO: Brianna
+    edit_menu.add_command(label="Insert Date / Time Here", command=insert_date_time)
     edit["menu"] = edit_menu # Associate menu with button
     # View menu
     view = ttk.Menubutton(menu_bar, text="View")
@@ -191,7 +199,6 @@ def initialize_components():
     help_menu.add_command(label="Help", command=show_help)
     help_menu.add_command(label="About", command=show_about)
     help["menu"] = help_menu # Associate menu with button
-
 
     #define and place scrollbars - Justin Cockrell
     scrollBarx = tk.Scrollbar(mainWindow, orient="horizontal")
@@ -210,7 +217,6 @@ def initialize_components():
     textPane.config(yscrollcommand=scrollBary.set,
                     xscrollcommand=scrollBarx.set)
 
-
 def insert_data(data):
     """
     Loads passed data into the text box, replacing whatever is currently in the text box.
@@ -219,7 +225,6 @@ def insert_data(data):
     #This won't change much. This just adds data to the textbox. Open file will change
     textPane.delete("1.0",tk.END)
     textPane.insert("1.0", data)
-
 
 #FILE IO SECTION
 #Expectation: When clicked, open file will open a filedialog and then pass the path of the file to insert_data
@@ -242,7 +247,6 @@ def save_file(saveAs = False): #Optional saveAs variable to turn this into a sav
     with open(filePath, "w") as file: #here we are writing. the variable.
         data = file.write(textPane.get("1.0", tk.END))
     print(textPane.get("1.0", tk.END))
-
 
 #Drawing a blank here. Surely we will have to add stuff to main later but I think it may get called in other functions
 def launch():
@@ -272,7 +276,6 @@ def show_about():
     about_text.insert("1.0", body)
     about_text["state"] = "disabled"
     about_text.grid(row=1, column=0)
-
 
 def show_help():
     path = exec_dir / "help.txt"
