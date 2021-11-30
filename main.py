@@ -103,6 +103,35 @@ def get_font(type,size,style):
         choice = (type,size,style)
 
     textPane.configure(font=choice)
+    
+ #bryanna: function for searching within program.
+def searchTerm():
+    wordCount = tk.StringVar()
+    #simpledialog was inputed into app to bring up textbox
+    userInput = simpledialog.askstring("Search Box", "What are you searching for?")
+    myIndex=textPane.search(userInput, "1.0", count=wordCount)
+    print(userInput)        #DELETE this- was for debug
+    print("index:%s$$$$"%myIndex)   #same here- debug
+    
+    while myIndex != "":    #function to cycle through all of the file
+        print("wordcount: %s $$$" % wordCount.get())#debug
+        textPane.tag_add("search",myIndex,"%s + %sc" % (myIndex,wordCount.get()))
+        #highlights the searched words/letters in text
+        textPane.tag_config("search", background = "yellow", foreground = "black")
+        myIndex= textPane.search(userInput,myIndex+" + 1c",stopindex=tk.END, count=wordCount)
+        print(myIndex)
+
+#bryanna: function for search and replace.
+def searchReplace():    #basically just taking the code from the search function
+    wordCount = tk.StringVar()
+    userInput = simpledialog.askstring("Search Box", "What are you searching for?")
+    myIndex=textPane.search(userInput, "1.0", count=wordCount)    
+    while myIndex != "":
+        textPane.tag_add("search",myIndex,"%s + %sc" % (myIndex,wordCount.get()))
+        #function to delete the users input from application
+        textPane.delete(myIndex,"%s + %sc" % (myIndex,wordCount.get()))
+        textPane.tk.insert("1.0","hello") #cant get this to replace?? ugh
+    return
 
 def upper_selection():
     """
@@ -174,13 +203,13 @@ def initialize_components():
     edit = ttk.Menubutton(menu_bar, text="Edit")
     edit.grid(row=0, column=1)
     edit_menu = tk.Menu(edit, tearoff=0)
-    edit_menu.add_command(label="Find...", command=stub) #TODO: Brianna
-    edit_menu.add_command(label="Find and Replace...", command=stub) #TODO: Brianna
+    edit_menu.add_command(label="Find...", command=searchTerm) #TODO: Brianna
+    edit_menu.add_command(label="Find and Replace...", command=searchReplace) #TODO: Brianna
     edit_menu.add_separator()
     edit_menu.add_command(label="Uppercase Selection", command=upper_selection) #TODO: Brianna
     edit_menu.add_command(label="Lowercase Selection", command=lower_selection) #TODO: Brianna
     edit_menu.add_separator()
-    edit_menu.add_command(label="Sort Lines Alphabetically", command=stub) #TODO: Brianna
+    edit_menu.add_command(label="Sort Lines Alphabetically", command=sortLines) #TODO: Brianna
     edit_menu.add_command(label="Insert Date / Time Here", command=insert_date_time)
     edit["menu"] = edit_menu # Associate menu with button
     # View menu
@@ -250,6 +279,17 @@ def save_file(saveAs = False): #Optional saveAs variable to turn this into a sav
     with open(filePath, "w") as file: #here we are writing. the variable.
         data = file.write(textPane.get("1.0", tk.END))
     print(textPane.get("1.0", tk.END))
+
+#bryanna: function for sorted lines in a file. 
+def sortLines():
+    global textPane     #calling the filepath
+    with open(filePath, "r") as file:
+        for line in sorted(open(filePath)): #sort function
+            sortline = print(line, end= "")
+        print (sortline)    #debug 
+    textPane.insert("0", sortline())    #insert sorted lines back into application
+    #still working on having this insert into application ergg
+    
 
 
 #Drawing a blank here. Surely we will have to add stuff to main later but I think it may get called in other functions
