@@ -2,6 +2,7 @@ from pathlib import Path
 from tkinter import ttk, font, filedialog
 from functools import partial
 import tkinter as tk, datetime as dt
+from tkinter import simpledialog
 
 #global variables
 mainWindow = ""
@@ -33,8 +34,6 @@ def initialize_application_frame():
     mainWindow = tk.Tk()
     mainWindow.title("Notepad Group Project")
     mainWindow.geometry("800x500")
-
-
 
 def toggle_wrap():
     """
@@ -86,7 +85,6 @@ def font_window():
     apply = tk.Button(fontWindow, text="Apply", command=partial(get_font,fontBox,size,style))
     apply.grid(row=1, column=1, columnspan=15)
 
-
 def get_font(type,size,style):
     """
     Action for 'Apply' from the font window. This changes the font to whatever is
@@ -106,6 +104,8 @@ def get_font(type,size,style):
     
  #bryanna: function for searching within program.
 def searchTerm():
+    global textPane
+    textPane.tag_remove('search', '1.0', tk.END)
     wordCount = tk.StringVar()
     #simpledialog was inputed into app to bring up textbox
     userInput = simpledialog.askstring("Search Box", "What are you searching for?")
@@ -123,14 +123,15 @@ def searchTerm():
 
 #bryanna: function for search and replace.
 def searchReplace():    #basically just taking the code from the search function
+    global textPane
     wordCount = tk.StringVar()
     userInput = simpledialog.askstring("Search Box", "What are you searching for?")
+    replaceWord = simpledialog.askstring("Replace Box", "Replace with what?")
     myIndex=textPane.search(userInput, "1.0", count=wordCount)    
     while myIndex != "":
-        textPane.tag_add("search",myIndex,"%s + %sc" % (myIndex,wordCount.get()))
-        #function to delete the users input from application
         textPane.delete(myIndex,"%s + %sc" % (myIndex,wordCount.get()))
-        textPane.tk.insert("1.0","hello") #cant get this to replace?? ugh
+        textPane.insert(myIndex, replaceWord)
+        myIndex = textPane.search(userInput, myIndex+ "+ 1c", stopindex=tk.END, count=wordCount)
     return
 
 def upper_selection():
@@ -138,22 +139,30 @@ def upper_selection():
     Takes the selected range from the text pane and converts that text to uppercase in place.
     """
     global textPane
-    start = tk.SEL_FIRST #The first index of the selected range
-    end = tk.SEL_LAST #the last index of the highlighted range
-    selection = textPane.get(start,end) #store the selected text in a variable
-    textPane.insert(start, selection.upper())#insert the uppercase stuff
-    textPane.delete(start,end) #delete the selection (the not converted)
+    try:
+        start = tk.SEL_FIRST #The first index of the selected range
+        end = tk.SEL_LAST #the last index of the highlighted range
+
+
+        selection = textPane.get(start,end) #store the selected text in a variable
+        textPane.insert(start, selection.upper())#insert the uppercase stuff
+        textPane.delete(start,end) #delete the selection (the not converted)
+    except:
+        return
 
 def lower_selection():
     """
     Takes the selected range from the text pane and converts that text to lowercase in place.
     """
     global textPane
-    start = tk.SEL_FIRST #The first index of the selected range
-    end = tk.SEL_LAST #the last index of the highlighted range
-    selection = textPane.get(start,end)#store the selected text in a variable
-    textPane.insert(start, selection.lower())#insert the lowercase stuff
-    textPane.delete(start,end)#delete the selection (the not converted)
+    try:
+        start = tk.SEL_FIRST #The first index of the selected range
+        end = tk.SEL_LAST #the last index of the highlighted range
+        selection = textPane.get(start,end)#store the selected text in a variable
+        textPane.insert(start, selection.lower())#insert the lowercase stuff
+        textPane.delete(start,end)#delete the selection (the not converted)
+    except:
+        return
 
 def insert_date_time():
     global textPane
@@ -263,8 +272,16 @@ def insert_data(data):
 def open_file():
     global filePath #Imports the global filepath variable for use locally
     filePath = filedialog.askopenfilename() #opens a dialog to browse for file, assigning it to the file path.
-    with open(filePath, "r") as file: #open the file
-        data = file.read() #read data into variable
+    if filePath == "":
+        "You didn't choose a file, try that again!"
+        return
+    try:
+        with open(filePath, "r") as file: #open the file
+            data = file.read() #read data into variable
+    except FileNotFoundError:
+        print("File not found")
+    except OSError:
+        print("Something is wrong with that file")
     # Modified by Deon
     insert_data(data) #Justin's function to put the data into the text frame
 
@@ -276,9 +293,15 @@ def save_file(saveAs = False): #Optional saveAs variable to turn this into a sav
     #If there is no filepath (so like if they just click save but we don't know the file path
     #Or if we just pass in saveAs = True. This way we can force it to ask for a filename.
         filePath = filedialog.asksaveasfilename() #assign a new filepath
-    with open(filePath, "w") as file: #here we are writing. the variable.
-        data = file.write(textPane.get("1.0", tk.END))
-    print(textPane.get("1.0", tk.END))
+    if filePath == "":
+        print("You didn't choose a file! Try that again")
+        return
+    try:
+        with open(filePath, "w") as file: #here we are writing. the variable.
+            data = file.write(textPane.get("1.0", tk.END))
+    except OSError:
+        print("Some kind of access error. ")
+    #print(textPane.get("1.0", tk.END))
 
 #bryanna: function for sorted lines in a file. 
 def sortLines():
@@ -289,8 +312,6 @@ def sortLines():
         print (sortline)    #debug 
     textPane.insert("0", sortline())    #insert sorted lines back into application
     #still working on having this insert into application ergg
-    
-
 
 #Drawing a blank here. Surely we will have to add stuff to main later but I think it may get called in other functions
 def launch():
