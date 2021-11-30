@@ -1,3 +1,15 @@
-Header
-body
-body
+Credits
+
+Justin / Brian: Core Tkinter application.
+Justin: Font changer, upper / lower altering, throw_error functionality, date/time insert, word wrap
+Brian: Help / About windows and the menu bar. This framed the whole application
+Deon: File open / save / save as
+Bryanna: String manipulation. Search, find and replace, sort alphabetically
+
+
+Powerpoint: Deon 
+Document: All of us worked hard on the SDLC document. 
+Github manager: Brian Kram
+
+
+
