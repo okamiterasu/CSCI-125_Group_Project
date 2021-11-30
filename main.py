@@ -14,6 +14,11 @@ wrap = 0
 
 # TODO: Look over this document for TODO tags. Make sure you have contributed your part on time
 # TODO: Brianna and Deon, please claim some of the unclaimed work that needs to be done. Listed below
+def throw_error(message):
+    """
+    Allows an easy way to show error messages
+    """
+    simpledialog.messagebox.showerror("Error", message)
 
 def stub():
     """
@@ -29,7 +34,7 @@ def initialize_application_frame():
     Justin Cockrell
     """
     #Very basic tkinter frame. You always have something like this
-    print("Now generating the base application frame (Blank)\n\n")
+    #print("Now generating the base application frame (Blank)\n\n")
     global mainWindow
     mainWindow = tk.Tk()
     mainWindow.title("Notepad Group Project")
@@ -38,7 +43,7 @@ def initialize_application_frame():
 def toggle_wrap():
     """
     Justin Cockrell.
-    Toggles Word in the editor
+    Toggles Word Wrap in the editor
     """
     global textPane #textPane is global. This is the reference to it.
     global wrap
@@ -101,7 +106,7 @@ def get_font(type,size,style):
         choice = (type,size,style)
 
     textPane.configure(font=choice)
-    
+
  #bryanna: function for searching within program.
 def searchTerm():
     global textPane
@@ -112,7 +117,7 @@ def searchTerm():
     myIndex=textPane.search(userInput, "1.0", count=wordCount)
     print(userInput)        #DELETE this- was for debug
     print("index:%s$$$$"%myIndex)   #same here- debug
-    
+
     while myIndex != "":    #function to cycle through all of the file
         print("wordcount: %s $$$" % wordCount.get())#debug
         textPane.tag_add("search",myIndex,"%s + %sc" % (myIndex,wordCount.get()))
@@ -127,7 +132,7 @@ def searchReplace():    #basically just taking the code from the search function
     wordCount = tk.StringVar()
     userInput = simpledialog.askstring("Search Box", "What are you searching for?")
     replaceWord = simpledialog.askstring("Replace Box", "Replace with what?")
-    myIndex=textPane.search(userInput, "1.0", count=wordCount)    
+    myIndex=textPane.search(userInput, "1.0", count=wordCount)
     while myIndex != "":
         textPane.delete(myIndex,"%s + %sc" % (myIndex,wordCount.get()))
         textPane.insert(myIndex, replaceWord)
@@ -165,6 +170,9 @@ def lower_selection():
         return
 
 def insert_date_time():
+    """
+    Inserts the date and time wherever the cursor is
+    """
     global textPane
     dateTime = dt.datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
     textPane.insert(textPane.index(tk.INSERT), dateTime)
@@ -254,9 +262,6 @@ def initialize_components():
                     xscrollcommand=scrollBarx.set)
     textPane.pack(expand=True, fill="both")
 
-
-
-
 def insert_data(data):
     """
     Loads passed data into the text box, replacing whatever is currently in the text box.
@@ -279,9 +284,9 @@ def open_file():
         with open(filePath, "r") as file: #open the file
             data = file.read() #read data into variable
     except FileNotFoundError:
-        print("File not found")
+        throw_error("File Not found! Fix. Try again")
     except OSError:
-        print("Something is wrong with that file")
+        throw_error("Something is wrong with that file")
     # Modified by Deon
     insert_data(data) #Justin's function to put the data into the text frame
 
@@ -300,16 +305,16 @@ def save_file(saveAs = False): #Optional saveAs variable to turn this into a sav
         with open(filePath, "w") as file: #here we are writing. the variable.
             data = file.write(textPane.get("1.0", tk.END))
     except OSError:
-        print("Some kind of access error. ")
+        throw_error("Some kind of access error. ")
     #print(textPane.get("1.0", tk.END))
 
-#bryanna: function for sorted lines in a file. 
+#bryanna: function for sorted lines in a file.
 def sortLines():
     global textPane     #calling the filepath
     with open(filePath, "r") as file:
         for line in sorted(open(filePath)): #sort function
             sortline = print(line, end= "")
-        print (sortline)    #debug 
+        print (sortline)    #debug
     textPane.insert("0", sortline())    #insert sorted lines back into application
     #still working on having this insert into application ergg
 
@@ -324,7 +329,6 @@ def launch():
     initialize_components()
     mainWindow.mainloop()
 
-
 def show_about():  # program that opens about txt
     header = ""
     body = ""
@@ -335,9 +339,9 @@ def show_about():  # program that opens about txt
             header = next(file)
             body = "".join(file)
     except FileNotFoundError:
-        print("File not found!")
+        throw_error("File not found!")
     except OSError:
-        print("File corrupted!")
+        throw_error("File corrupted!")
 
 
     about_window = tk.Toplevel(master=mainWindow)
@@ -347,7 +351,6 @@ def show_about():  # program that opens about txt
     about_text.insert("1.0", body)
     about_text["state"] = "disabled"
     about_text.grid(row=1, column=0)
-
 
 def show_help():  # program that opens help txt
     header = ""
@@ -359,9 +362,9 @@ def show_help():  # program that opens help txt
             header = next(file)
             body = "".join(file)
     except FileNotFoundError:
-        print("File not found!")
+        throw_error("File not found!")
     except OSError:
-        print("File corrupted!")
+        throw_error("File corrupted!")
 
     help_window = tk.Toplevel(master=mainWindow)
     help_window.title("About")
@@ -370,6 +373,4 @@ def show_help():  # program that opens help txt
     help_text.insert("1.0", body)
     help_text["state"] = "disabled"
     help_text.grid(row=1, column=0)
-
-
 launch()
