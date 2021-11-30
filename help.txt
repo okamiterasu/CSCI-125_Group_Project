@@ -1,3 +1,6 @@
-Header
-body
-body
+Help
+
+Navigate through the program using the menu bar at the top! 
+     The file menu can be used to open / save your file as well as launch a new window. 
+     Edit will allow you to find and replace text, sort the file alphabetically and modify the casing of a selection and insert the date / time
+     You must have found the help menu because you are here! Check out about as well!
